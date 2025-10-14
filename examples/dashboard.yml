@@ -1,0 +1,255 @@
+# Hassalarm Wake-Up Light Integration
+# Dashboard Card Examples
+#
+# Add these to your Lovelace dashboard
+# Edit Dashboard → Add Card → Manual (YAML)
+
+# ========================================
+# MAIN CONTROL CARD
+# Toggle button with status indicators
+# Requires: button-card from HACS
+# ========================================
+type: custom:button-card
+entity: input_boolean.alarm_light_enabled
+name: |
+  [[[
+    return entity.state === 'on' ? 'Alarm Light is ON' : 'Alarm Light is OFF';
+  ]]]
+icon: mdi:alarm-light
+show_state: false
+show_label: true
+label: |
+  [[[
+    if (states['input_datetime.next_alarm']) {
+      return 'Next: ' + states['input_datetime.next_alarm'].state;
+    }
+    return 'No alarm set';
+  ]]]
+tap_action:
+  action: toggle
+styles:
+  icon:
+    - width: 35px
+    - color: |
+        [[[ 
+          var phone = states['device_tracker.your_phone'];  // CHANGE THIS
+          var phoneHome = phone && phone.state === 'home';
+          var enabled = entity.state === 'on';
+          
+          if (phoneHome && enabled) 
+            return 'green';
+          else if (enabled)
+            return 'orange';
+          else
+            return 'red';
+        ]]]
+  card:
+    - padding: 12px
+
+# ========================================
+# ALTERNATIVE: SIMPLE ENTITIES CARD
+# No custom components required
+# ========================================
+type: entities
+title: Wake-Up Alarm
+entities:
+  - entity: input_datetime.next_alarm
+    name: Next Alarm
+    icon: mdi:alarm
+  - entity: input_boolean.alarm_light_enabled
+    name: Enable Light Flash
+  - entity: device_tracker.your_phone  # CHANGE THIS
+    name: Phone Location
+  - type: button
+    name: Test Light Flash
+    icon: mdi:lightbulb-on
+    action_name: TEST
+    tap_action:
+      action: call-service
+      service: script.alarm_light_flash
+
+# ========================================
+# ALTERNATIVE: COMPACT CARD
+# Minimal design with essential info
+# ========================================
+type: custom:button-card
+entity: input_datetime.next_alarm
+name: Next Alarm
+icon: mdi:alarm-clock
+show_state: true
+show_label: true
+label: |
+  [[[
+    var enabled = states['input_boolean.alarm_light_enabled'].state;
+    var phone = states['device_tracker.your_phone'].state;  // CHANGE THIS
+    if (enabled === 'on' && phone === 'home') {
+      return '✓ Light will flash';
+    } else if (enabled === 'on') {
+      return '⚠ You are away';
+    } else {
+      return '✗ Light disabled';
+    }
+  ]]]
+tap_action:
+  action: more-info
+styles:
+  card:
+    - height: 80px
+
+# ========================================
+# FULL DASHBOARD VIEW
+# Complete view with all alarm controls
+# ========================================
+views:
+  - title: Wake-Up Alarm
+    icon: mdi:alarm
+    cards:
+      # Status Card
+      - type: custom:button-card
+        entity: input_boolean.alarm_light_enabled
+        name: |
+          [[[
+            return entity.state === 'on' ? 'Alarm Light is ON' : 'Alarm Light is OFF';
+          ]]]
+        icon: mdi:alarm-light
+        show_state: false
+        show_label: true
+        label: |
+          [[[
+            if (states['input_datetime.next_alarm']) {
+              return 'Next: ' + states['input_datetime.next_alarm'].state;
+            }
+            return 'No alarm set';
+          ]]]
+        tap_action:
+          action: toggle
+        styles:
+          icon:
+            - width: 35px
+            - color: |
+                [[[ 
+                  var phone = states['device_tracker.your_phone'];  // CHANGE THIS
+                  var phoneHome = phone && phone.state === 'home';
+                  var enabled = entity.state === 'on';
+                  
+                  if (phoneHome && enabled) 
+                    return 'green';
+                  else if (enabled)
+                    return 'orange';
+                  else
+                    return 'red';
+                ]]]
+          card:
+            - padding: 12px
+      
+      # Details Card
+      - type: entities
+        title: Alarm Details
+        entities:
+          - entity: input_datetime.next_alarm
+            name: Scheduled Time
+          - entity: sensor.time_until_alarm
+            name: Time Until Alarm
+          - entity: device_tracker.your_phone  # CHANGE THIS
+            name: Phone Status
+          - entity: input_boolean.alarm_light_enabled
+            name: Light Flash Enabled
+      
+      # Test Controls
+      - type: entities
+        title: Test Controls
+        entities:
+          - type: button
+            name: Test Light Flash
+            icon: mdi:lightbulb-on
+            action_name: TEST
+            tap_action:
+              action: call-service
+              service: script.alarm_light_flash
+          - type: button
+            name: Stop Light Flash
+            icon: mdi:stop
+            action_name: STOP
+            tap_action:
+              action: call-service
+              service: script.turn_off
+              service_data:
+                entity_id: script.alarm_light_flash
+      
+      # Optional: History Graph
+      - type: history-graph
+        title: Alarm History
+        hours_to_show: 168  # 1 week
+        entities:
+          - entity: input_datetime.next_alarm
+          - entity: input_boolean.alarm_light_enabled
+
+# ========================================
+# MARKDOWN INFO CARD
+# Display instructions and status
+# ========================================
+type: markdown
+content: |
+  ## 🌅 Wake-Up Light Status
+  
+  {% set alarm = states('input_datetime.next_alarm') %}
+  {% set enabled = is_state('input_boolean.alarm_light_enabled', 'on') %}
+  {% set phone = is_state('device_tracker.your_phone', 'home') %}  {# CHANGE THIS #}
+  
+  **Next Alarm:** {{ alarm if alarm not in ['unknown', 'unavailable'] else 'Not set' }}
+  
+  **Light Flash:** {{ '✅ Enabled' if enabled else '❌ Disabled' }}
+  
+  **Phone Status:** {{ '🏠 Home' if phone else '🚗 Away' }}
+  
+  ---
+  
+  {% if enabled and phone %}
+  ✅ **All systems ready!** Light will flash when alarm triggers.
+  {% elif enabled and not phone %}
+  ⚠️ **Warning:** You're away from home. Light won't trigger.
+  {% else %}
+  ℹ️ **Info:** Alarm light is currently disabled.
+  {% endif %}
+  
+  💡 Tap the control button above to toggle on/off.
+
+# ========================================
+# GLANCE CARD
+# Quick overview of all entities
+# ========================================
+type: glance
+title: Wake-Up Overview
+entities:
+  - entity: input_datetime.next_alarm
+    name: Next Alarm
+  - entity: input_boolean.alarm_light_enabled
+    name: Enabled
+  - entity: device_tracker.your_phone  # CHANGE THIS
+    name: Phone
+  - entity: sensor.time_until_alarm
+    name: Time Left
+
+# ========================================
+# PICTURE ELEMENTS CARD
+# Visual floorplan-style control
+# (Requires background image)
+# ========================================
+type: picture-elements
+image: /local/bedroom_floorplan.png  # Add your own image
+elements:
+  - type: state-icon
+    entity: input_boolean.alarm_light_enabled
+    tap_action:
+      action: toggle
+    style:
+      top: 50%
+      left: 30%
+      transform: scale(2)
+  - type: state-label
+    entity: input_datetime.next_alarm
+    style:
+      top: 80%
+      left: 50%
+      color: white
+      font-size: 20px

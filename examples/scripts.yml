@@ -1,0 +1,161 @@
+# Hassalarm Wake-Up Light Integration
+# Scripts configuration
+#
+# Add this to your scripts.yaml file
+
+# ========================================
+# BASIC LIGHT FLASH SCRIPT
+# Flashes a single light on/off every 2 seconds for 60 seconds
+# ========================================
+alarm_light_flash:
+  alias: "Alarm Light Flash"
+  sequence:
+    - repeat:
+        count: 30  # 30 cycles × 2 seconds = 60 seconds total
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom  # CHANGE THIS to your light entity
+          - delay:
+              seconds: 1
+          - action: light.turn_off
+            target:
+              entity_id: light.bedroom  # CHANGE THIS to your light entity
+          - delay:
+              seconds: 1
+
+# ========================================
+# ALTERNATIVE: MULTIPLE LIGHTS
+# Flash multiple lights simultaneously
+# ========================================
+alarm_light_flash_multi:
+  alias: "Alarm Multiple Lights Flash"
+  sequence:
+    - repeat:
+        count: 30
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id:
+                - light.bedroom_lamp
+                - light.bedside_light
+                - light.hallway_light
+          - delay:
+              seconds: 1
+          - action: light.turn_off
+            target:
+              entity_id:
+                - light.bedroom_lamp
+                - light.bedside_light
+                - light.hallway_light
+          - delay:
+              seconds: 1
+
+# ========================================
+# ALTERNATIVE: BRIGHTNESS RAMP
+# Gradually increase brightness from 0 to 100% over 60 seconds
+# ========================================
+alarm_light_ramp:
+  alias: "Alarm Light Brightness Ramp"
+  sequence:
+    - repeat:
+        count: 10
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom
+            data:
+              brightness: "{{ repeat.index * 25 }}"  # 0, 25, 50, 75... 250 (max 255)
+              transition: 5
+          - delay:
+              seconds: 6
+
+# ========================================
+# ALTERNATIVE: COLOR CYCLE
+# Cycle through colors while flashing
+# ========================================
+alarm_light_color_cycle:
+  alias: "Alarm Light Color Cycle"
+  sequence:
+    - repeat:
+        count: 30
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom_rgb
+            data:
+              rgb_color: >
+                {% set colors = [
+                  [255, 0, 0],    # Red
+                  [255, 127, 0],  # Orange
+                  [255, 255, 0],  # Yellow
+                  [0, 255, 0],    # Green
+                  [0, 0, 255]     # Blue
+                ] %}
+                {{ colors[repeat.index % 5] }}
+              brightness: 255
+          - delay:
+              seconds: 1
+          - action: light.turn_off
+            target:
+              entity_id: light.bedroom_rgb
+          - delay:
+              seconds: 1
+
+# ========================================
+# ALTERNATIVE: FAST STROBE
+# Faster flashing for heavy sleepers
+# ========================================
+alarm_light_strobe:
+  alias: "Alarm Light Fast Strobe"
+  sequence:
+    - repeat:
+        count: 60  # 60 cycles × 1 second = 60 seconds
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom
+            data:
+              brightness: 255
+          - delay:
+              milliseconds: 500
+          - action: light.turn_off
+            target:
+              entity_id: light.bedroom
+          - delay:
+              milliseconds: 500
+
+# ========================================
+# ALTERNATIVE: GENTLE WAKE
+# Longer, slower flashing for gentle wake-up
+# ========================================
+alarm_light_gentle:
+  alias: "Alarm Light Gentle Wake"
+  sequence:
+    - repeat:
+        count: 20  # 20 cycles × 6 seconds = 120 seconds
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.bedroom
+            data:
+              brightness: 128  # 50% brightness
+              transition: 2
+          - delay:
+              seconds: 3
+          - action: light.turn_off
+            target:
+              entity_id: light.bedroom
+            data:
+              transition: 2
+          - delay:
+              seconds: 3
+
+# ========================================
+# MANUAL TEST SCRIPT
+# Use this to test your light setup without waiting for alarm
+# ========================================
+test_alarm_light:
+  alias: "Test Alarm Light"
+  sequence:
+    - action: script.alarm_light_flash  # Change to whichever script you want to test

@@ -1,0 +1,113 @@
+# Hassalarm Wake-Up Light Integration
+# Complete configuration.yaml example
+# 
+# Copy the sections you need into your existing configuration.yaml
+# DO NOT replace your entire file with this!
+
+# ========================================
+# INPUT DATETIME
+# Stores the next alarm time from Hassalarm app
+# ========================================
+input_datetime:
+  next_alarm:
+    name: Next scheduled alarm
+    has_date: true
+    has_time: true
+
+# ========================================
+# INPUT BOOLEAN
+# Toggle to enable/disable the alarm light automation
+# ========================================
+input_boolean:
+  alarm_light_enabled:
+    name: Alarm Light Enabled
+    initial: true  # Set to false if you want it disabled by default
+    icon: mdi:lightbulb-alert
+
+# ========================================
+# TIME SENSOR
+# Required for automation trigger
+# ========================================
+sensor:
+  - platform: time_date
+    display_options:
+      - 'date_time'
+      # You can also add these if needed:
+      # - 'time'
+      # - 'date'
+      # - 'time_date'
+      # - 'time_utc'
+      # - 'beat'
+
+# ========================================
+# HISTORY & RECORDER (Optional but Recommended)
+# Preserves alarm time across Home Assistant restarts
+# ========================================
+history:
+  # Basic configuration - stores all entities
+  # You can customize to include/exclude specific entities
+
+recorder:
+  # Basic configuration - default database settings
+  # Adjust purge_keep_days if you want to keep data longer/shorter
+  purge_keep_days: 7
+  
+  # Optional: Only record specific entities to save space
+  # include:
+  #   entities:
+  #     - input_datetime.next_alarm
+  #     - input_boolean.alarm_light_enabled
+  #     - device_tracker.your_phone
+
+# ========================================
+# OPTIONAL: TEMPLATE SENSOR
+# Shows time remaining until alarm
+# ========================================
+template:
+  - sensor:
+      - name: "Time Until Alarm"
+        unique_id: time_until_alarm
+        state: >
+          {% set alarm = states('input_datetime.next_alarm') %}
+          {% if alarm not in ['unknown', 'unavailable'] %}
+            {% set alarm_time = state_attr('input_datetime.next_alarm', 'timestamp') | int %}
+            {% set now_time = now().timestamp() | int %}
+            {% set diff = alarm_time - now_time %}
+            {% if diff > 0 %}
+              {{ (diff // 3600) }}h {{ ((diff % 3600) // 60) }}m
+            {% else %}
+              No upcoming alarm
+            {% endif %}
+          {% else %}
+            No alarm set
+          {% endif %}
+        icon: mdi:timer
+        
+      - name: "Next Alarm Friendly"
+        unique_id: next_alarm_friendly
+        state: >
+          {% set alarm = states('input_datetime.next_alarm') %}
+          {% if alarm not in ['unknown', 'unavailable'] %}
+            {{ as_timestamp(alarm) | timestamp_custom('%A, %B %d at %I:%M %p') }}
+          {% else %}
+            No alarm scheduled
+          {% endif %}
+        icon: mdi:alarm
+
+# ========================================
+# OPTIONAL: NOTIFICATIONS
+# Get notified when alarm is set
+# ========================================
+# automation:
+#   - alias: "Notify When Alarm Set"
+#     trigger:
+#       - platform: state
+#         entity_id: input_datetime.next_alarm
+#     condition:
+#       - condition: template
+#         value_template: "{{ trigger.to_state.state not in ['unknown', 'unavailable'] }}"
+#     action:
+#       - service: notify.mobile_app_your_phone
+#         data:
+#           title: "Alarm Set"
+#           message: "Wake up light will trigger at {{ states('sensor.next_alarm_friendly') }}"
