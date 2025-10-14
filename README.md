@@ -218,7 +218,7 @@ type: custom:button-card
 entity: input_boolean.alarm_light_enabled
 name: |
   [[[
-    return entity.state === 'on' ? 'Alarm Light is ON' : 'Alarm Light is OFF';
+    return entity.state === 'on' ? 'alarm light is ON' : 'alarm ight is OFF';
   ]]]
 icon: mdi:alarm-light
 show_state: false
@@ -234,7 +234,7 @@ tap_action:
   action: toggle
 styles:
   icon:
-    - width: 35px
+    - width: 105px
     - color: |
         [[[ 
           var phone = states['device_tracker.shadow'];  // CHANGE THIS to your device tracker
