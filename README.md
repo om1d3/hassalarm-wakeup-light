@@ -1,148 +1,151 @@
-# Hassalarm Wake-Up Light Integration for Home Assistant
+# Hassalarm Wake-Up Light integration for Home Assistant
 
-A complete Home Assistant integration that uses the [Hassalarm Android app](https://github.com/Johboh/hassalarm) to trigger a flashing light automation when your phone alarm goes off - but only when you're actually at home!
+a complete Home Assistant integration that uses the [Hassalarm Android app](https://github.com/Johboh/hassalarm) to trigger a flashing light automation when your phone alarm goes off - but only when you're actually at home!
 
-## 📋 Table of Contents
+## 📋 table of contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [How It Works](#how-it-works)
-- [Troubleshooting](#troubleshooting)
-- [Credits](#credits)
-
----
-
-## 🎯 Overview
-
-This project creates an intelligent wake-up system that:
-- Automatically syncs your Android phone alarms with Home Assistant
-- Triggers a light flashing sequence when the alarm goes off
-- Only activates when you're at home (detected via WiFi presence)
-- Provides a dashboard toggle to enable/disable the automation
-- Shows visual status indicators (green/orange/red) based on your location and settings
-
-**Perfect for:**
-- People who need a gentle (or not-so-gentle) wake-up with light
-- Smart home enthusiasts who want their alarms integrated with Home Assistant
-- Anyone who wants location-aware alarm automations
+- [overview](#overview)
+- [features](#features)
+- [requirements](#requirements)
+- [installation](#installation)
+- [configuration](#configuration)
+- [how it works](#how-it-works)
+- [troubleshooting](#troubleshooting)
+- [credits](#credits)
 
 ---
 
-## ✨ Features
+## 🎯 overview
 
-- **Automatic Alarm Sync**: Your phone alarms automatically sync to Home Assistant via Hassalarm
-- **Smart Light Flashing**: Light turns on/off every 2 seconds for 60 seconds when alarm triggers
-- **Presence Detection**: Only triggers if your phone is connected to home WiFi
-- **Dashboard Control**: Beautiful button card to enable/disable the automation
-- **Visual Status**:
-  - 🟢 **Green**: You're home & alarm is enabled
-  - 🟠 **Orange**: Alarm enabled but you're away
-  - 🔴 **Red**: Alarm is disabled
-- **Next Alarm Display**: Shows when your next alarm is scheduled
+this project creates an intelligent wake-up system that:
+- automatically syncs your Android phone alarms with Home Assistant
+- triggers a light flashing sequence when the alarm goes off
+- only activates when you're at home (detected via WiFi presence)
+- provides a dashboard toggle to enable/disable the automation
+- shows visual status indicators (green/orange/red) based on your location and settings
+
+**perfect for:**
+- people who need a gentle (or not-so-gentle) wake-up with light
+- smart home enthusiasts who want their alarms integrated with Home Assistant
+- anyone who wants location-aware alarm automations
 
 ---
 
-## 📦 Requirements
+## ✨ features
 
-### Hardware/Software
+- **automatic Alarm sync**: your phone alarms automatically sync to Home Assistant via Hassalarm
+- **Smart Light Flashing**: light turns OFF/ON every 2 seconds for 60 seconds when alarm triggers
+- **presence detection**: only triggers if your phone is connected to home WiFi
+- **Dashboard control**: beautiful button card to enable/disable the automation
+- **visual status**:
+  - 🟢 **green**: you're home & alarm is enabled
+  - 🟠 **orange**: alarm enabled but you're away
+  - 🔴 **red**: alarm is disabled
+- **next Alarm display**: shows when your next alarm is scheduled
+
+---
+
+## 📦 requirements
+
+### hardware/software
 - **Home Assistant** 2020.12.1 or later
 - **Android phone** with alarm clock app
 - **WiFi network** for presence detection
-- **Smart light** (any light entity controllable by Home Assistant)
+- **smart light** (any light entity controllable by Home Assistant)
 
-### Home Assistant Components
-- Core components (pre-installed):
+### Home Assistant components
+- core components (pre-installed):
   - `input_datetime`
   - `input_boolean`
   - `sensor` (time_date)
   - `history` (optional but recommended)
   - `recorder` (optional but recommended)
 
-### HACS Frontend Components
-Install these via [HACS](https://hacs.xyz/):
-- **[button-card](https://github.com/custom-cards/button-card)** - For the dashboard interface
+### HACS frontend components
+install these via [HACS](https://hacs.xyz/):
+- **[button-card](https://github.com/custom-cards/button-card)** - for the dashboard interface
 
-### Mobile Apps
+### mobile apps
 - **[Hassalarm](https://play.google.com/store/apps/details?id=com.fjun.hassalarm)** - Android app for alarm sync
-- **[Home Assistant Companion App](https://companion.home-assistant.io/)** - For phone presence detection
+- **[Home Assistant companion app](https://companion.home-assistant.io/)** - For phone presence detection
 
 ---
 
-## 🚀 Installation
+## 🚀 installation
 
-### Step 1: Install Hassalarm on Your Phone
+### step 1: install Hassalarm on your phone
 
-1. Install [Hassalarm from Google Play Store](https://play.google.com/store/apps/details?id=com.fjun.hassalarm)
-2. In Home Assistant, go to your **Profile** → **Long-Lived Access Tokens**
-3. Create a new token and copy it
-4. Open Hassalarm and configure:
-   - **Home Assistant URL**: Your HA URL (e.g., `http://192.168.1.100:8123`)
-   - **Access Token**: Paste the token you created
-   - **Entity ID**: `input_datetime.next_alarm`
-5. Set an alarm in your phone's clock app to test
+1. install [Hassalarm from Google Play Store](https://play.google.com/store/apps/details?id=com.fjun.hassalarm)
+2. in Home Assistant, go to your **Profile** → **Long-Lived Access Tokens**
+3. create a new token and copy it
+4. open Hassalarm and configure:
+   - **Home Assistant URL**: your HA URL (e.g., `http://192.168.1.100:8123`)
+   - **access yoken**: Paste the token you created
+   - **entity ID**: `input_datetime.next_alarm`
+5. set an alarm in your phone's clock app to test
 
-### Step 2: Install Home Assistant Companion App
+### step 2: install Home Assistant companion app
 
-1. Install the [Home Assistant Companion App](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android) on your phone
-2. Log in and set up location tracking
-3. Note your device tracker entity name (e.g., `device_tracker.your_phone_name`)
+1. install the [Home Assistant companion app](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android) on your phone
+2. log in and set up location tracking
+3. note your device tracker entity name (e.g., `device_tracker.your_phone_name`)
 
-### Step 3: Install button-card via HACS
+### step 3: install button-card via HACS
 
-1. Open **HACS** in Home Assistant
-2. Go to **Frontend**
-3. Search for **"button-card"**
-4. Click **Install**
-5. **Restart Home Assistant**
+1. open **HACS** in Home Assistant
+2. go to **Frontend**
+3. search for **"button-card"**
+4. click **Install**
+5. **restart Home Assistant**
 
 ---
 
-## ⚙️ Configuration
+## ⚙️ configuration
 
-### 1. Add to `configuration.yaml`
+### 1. add to `configuration.yaml`
 
-Add the following configuration to your `configuration.yaml` file:
+add the following configuration to your `configuration.yaml` file:
 
 ```yaml
-# Input datetime to store the next alarm time from Hassalarm
+# input datetime to store the next alarm time from Hassalarm
 input_datetime:
   next_alarm:
     name: Next scheduled alarm
     has_date: true
     has_time: true
 
-# Input boolean to enable/disable the alarm light automation
+# input boolean to enable/disable the alarm light automation
 input_boolean:
   alarm_light_enabled:
     name: Alarm Light Enabled
     initial: true
     icon: mdi:lightbulb-alert
 
-# Time sensor for triggering automations at specific times
+# time sensor for triggering automations at specific times
 sensor:
   - platform: time_date
     display_options:
       - 'date_time'
 
-# Optional but recommended: Enable history and recorder
-# This ensures your alarm time persists across HA restarts
+# optional but recommended: Enable history and recorder
+# this ensures your alarm time persists across HA restarts
+### WARNING: if you ennumerate any sensors inside either history 
+### or recorder, Home Assistant is going to only persist those 
+### sensors and no other sensor data. keep that in mind. 
 history:
 
 recorder:
 ```
 
-**Why each component?**
+**why each component?**
 - `input_datetime.next_alarm`: Stores the next alarm time from your phone
 - `input_boolean.alarm_light_enabled`: Acts as an on/off switch for the automation
 - `sensor.date_time`: Provides current date/time for comparison with alarm time
 - `history` & `recorder`: Preserves data across restarts
 
-### 2. Create the Light Flash Script
+### 2. create the Light Flash Script
 
-Add to `scripts.yaml`:
+add to `scripts.yaml`:
 
 ```yaml
 alarm_light_flash:
@@ -151,31 +154,32 @@ alarm_light_flash:
     - repeat:
         count: 30  # Flashes for 60 seconds (30 cycles × 2 seconds)
         sequence:
-          - action: light.turn_on
+          - action: light.turn_off
             target:
               entity_id: light.dormitor_horia_veioza_pat  # CHANGE THIS to your light entity
           - delay:
               seconds: 1
-          - action: light.turn_off
+          - action: light.turn_on
             target:
               entity_id: light.dormitor_horia_veioza_pat  # CHANGE THIS to your light entity
           - delay:
               seconds: 1
 ```
 
-**Important**: Replace `light.dormitor_horia_veioza_pat` with your actual light entity ID.
+**important**: replace `light.dormitor_horia_veioza_pat` with your actual light entity ID.
 
-**How it works:**
-- Repeats 30 times (60 seconds total)
-- Each cycle: turns light ON for 1 second, OFF for 1 second
-- Creates a flashing effect to wake you up
+**how it works:**
+- repeats 30 times (60 seconds total)
+- each cycle: turns light OFF for 1 second, ON for 1 second
+- creates a flashing effect to wake you up
+- the light remains ON after the flashing
 
-### 3. Create the Automation
+### 3. create the Automation
 
-Add to `automations.yaml`:
+add to `automations.yaml`:
 
 ```yaml
-- alias: "Hassalarm Wake Up Light"
+- alias: "Hassalarm wake up light"
   trigger:
     - trigger: template
       value_template: "{{ states('sensor.date_time') == (state_attr('input_datetime.next_alarm', 'timestamp') | int | timestamp_custom('%Y-%m-%d, %H:%M', True)) }}"
@@ -190,28 +194,28 @@ Add to `automations.yaml`:
     - action: script.alarm_light_flash
 ```
 
-**Important**: Replace `device_tracker.shadow` with your actual device tracker entity ID.
+**important**: replace `device_tracker.shadow` with your actual device tracker entity ID.
 
-**How it works:**
-- **Trigger**: Fires when current time matches the alarm time
-- **Conditions**:
-  1. Your phone must be home (on WiFi)
-  2. The alarm light toggle must be enabled
-- **Action**: Runs the light flashing script
+**how it works:**
+- **trigger**: Fires when current time matches the alarm time
+- **conditions**:
+  1. your phone must be home (on WiFi)
+  2. the alarm light toggle must be enabled
+- **action**: runs the light flashing script
 
-### 4. Restart Home Assistant
+### 4. restart Home Assistant
 
-After editing `configuration.yaml`:
-1. Go to **Settings** → **System** → **Restart**
-2. Wait for Home Assistant to restart
+after editing `configuration.yaml`:
+1. go to **Settings** → **System** → **Restart**
+2. wait for Home Assistant to restart
 
-For `scripts.yaml` and `automations.yaml`, you can just reload:
-1. Go to **Developer Tools** → **YAML**
-2. Click **"Scripts"** and **"Automations"** to reload
+for `scripts.yaml` and `automations.yaml`, you can just reload:
+1. go to **Developer Tools** → **YAML**
+2. click **"Scripts"** and **"Automations"** to reload
 
-### 5. Add Dashboard Card
+### 5. add Dashboard Card
 
-Add this to your dashboard (Edit Dashboard → Add Card → Manual):
+add this to your dashboard (Edit Dashboard → Add Card → Manual):
 
 ```yaml
 type: custom:button-card
@@ -252,183 +256,183 @@ styles:
     - padding: 12px
 ```
 
-**Important**: Replace `device_tracker.shadow` with your actual device tracker entity ID.
+**important**: replace `device_tracker.shadow` with your actual device tracker entity ID.
 
 **Dashboard features:**
-- **Title**: Shows "Alarm Light is ON" or "Alarm Light is OFF"
-- **Label**: Displays next alarm time
+- **Title**: shows "Alarm Light is ON" or "Alarm Light is OFF"
+- **Label**: displays next alarm time
 - **Color coding**:
   - Green = Home & enabled
   - Orange = Away & enabled
   - Red = Disabled
-- **Click to toggle**: Enable/disable the automation
+- **click to toggle**: enable/disable the automation
 
 ---
 
-## 🔄 How It Works
+## 🔄 How it works
 
-### System Flow Diagram
+### System flow diagram
 
 ```mermaid
 graph TD
-    A[Set Alarm on Phone] --> B[Hassalarm Detects Alarm Change]
-    B --> C[Updates input_datetime.next_alarm in HA]
-    C --> D{Alarm Time Reached?}
+    A[set alarm on Phone] --> B[Hassalarm detects alarm change]
+    B --> C[updates input_datetime.next_alarm in HA]
+    C --> D{alarm time reached?}
     D -->|No| C
-    D -->|Yes| E{Check Conditions}
-    E --> F{Phone at Home?}
-    F -->|No| G[Do Nothing]
-    F -->|Yes| H{Alarm Light Enabled?}
+    D -->|Yes| E{check conditions}
+    E --> F{phone at home?}
+    F -->|No| G[do nothing]
+    F -->|Yes| H{alarm light enabled?}
     H -->|No| G
-    H -->|Yes| I[Run Light Flash Script]
-    I --> J[Turn Light ON]
-    J --> K[Wait 1 Second]
-    K --> L[Turn Light OFF]
-    L --> M[Wait 1 Second]
-    M --> N{Repeat 30 Times?}
+    H -->|Yes| I[run light flash script]
+    I --> J[turn light OFF]
+    J --> K[wait 1 second]
+    K --> L[turn light ON]
+    L --> M[wait 1 second]
+    M --> N{repeat 30 times?}
     N -->|No| J
-    N -->|Yes| O[End - You're Awake!]
+    N -->|Yes| O[end - you are awake!]
     
     style A fill:#e1f5ff
     style I fill:#fff3cd
     style O fill:#d4edda
 ```
 
-### Detailed Logic
+### detailed logic
 
-1. **Alarm Detection**
-   - You set an alarm in any Android alarm app
+1. **alarm detection**
+   - you set an alarm in any Android alarm app
    - Android broadcasts `ACTION_NEXT_ALARM_CLOCK_CHANGED`
    - Hassalarm detects this and sends the alarm time to Home Assistant
    - `input_datetime.next_alarm` is updated
 
-2. **Presence Tracking**
+2. **presence tracking**
    - Home Assistant Companion App tracks your phone's location
-   - When connected to home WiFi, `device_tracker` state = "home"
-   - When away, state = "away" or "not_home"
+   - when connected to home WiFi, `device_tracker` state = "home"
+   - when away, state = "away" or "not_home"
 
-3. **Automation Trigger**
-   - Every minute, HA compares current time with alarm time
-   - When they match, the automation triggers
+3. **automation trigger**
+   - every minute, HA compares current time with alarm time
+   - when they match, the automation triggers
 
-4. **Condition Checks**
-   - Is phone at home? (Check device tracker)
-   - Is alarm light enabled? (Check input_boolean)
-   - Both must be true to continue
+4. **condition checks**
+   - is phone at home? (Check device tracker)
+   - is alarm light enabled? (check input_boolean)
+   - both must be true to continue
 
 5. **Light Flashing**
-   - Script runs 30 iterations
-   - Each iteration: ON (1s) → OFF (1s)
-   - Total duration: 60 seconds
+   - script runs 30 iterations
+   - each iteration: OFF (1s) → N (1s)
+   - total duration: 60 seconds
 
 6. **Dashboard Control**
-   - Toggle button enables/disables automation
-   - Color indicates status at a glance
-   - Shows next scheduled alarm time
+   - toggle button enables/disables automation
+   - color indicates status at a glance
+   - shows next scheduled alarm time
 
 ---
 
-## 🔧 Troubleshooting
+## 🔧 troubleshooting
 
-### Hassalarm Not Syncing
+### Hassalarm not syncing
 
-**Problem**: Alarm time not updating in Home Assistant
+**problem**: Alarm time not updating in Home Assistant
 
-**Solutions**:
-1. **Check background permissions**:
+**solutions**:
+1. **check background permissions**:
    - Settings → Apps → Hassalarm → Battery → Unrestricted
    - Disable battery optimization for Hassalarm
 
-2. **Use Google Clock**: Some manufacturer alarm apps have bugs
-   - Install [Google Clock](https://play.google.com/store/apps/details?id=com.google.android.deskclock)
-   - Set alarms there instead
+2. **use Google Clock**: Some manufacturer alarm apps have bugs
+   - install [Google Clock](https://play.google.com/store/apps/details?id=com.google.android.deskclock)
+   - set alarms there instead
 
-3. **Verify token**: Ensure your long-lived access token is valid
-   - Check in Hassalarm app settings
-   - Generate a new token if needed
+3. **verify token**: Ensure your long-lived access token is valid
+   - check in Hassalarm app settings
+   - generate a new token if needed
 
-4. **Check entity ID**: Must be exactly `input_datetime.next_alarm`
+4. **check entity ID**: must be exactly `input_datetime.next_alarm`
 
-### Light Not Flashing
+### light not flashing
 
-**Problem**: Automation doesn't trigger at alarm time
+**problem**: Automation doesn't trigger at alarm time
 
-**Solutions**:
-1. **Check device tracker state**:
+**solutions**:
+1. **check device tracker state**:
    - Developer Tools → States
-   - Find your device tracker
-   - Verify it shows "home" (lowercase) when at home
-   - Update automation if state is capitalized differently
+   - find your device tracker
+   - verify it shows "home" (lowercase) when at home
+   - update automation if state is capitalized differently
 
-2. **Check input_boolean**:
-   - Make sure it's toggled ON in the dashboard
+2. **check input_boolean**:
+   - make sure it's toggled ON in the dashboard
 
-3. **Verify light entity**:
+3. **verify light entity**:
    - Developer Tools → States
-   - Test manually: `light.turn_on` service
-   - Replace with correct entity ID in script
+   - test manually: `light.turn_on` service
+   - replace with correct entity ID in script
 
-4. **Check time sensor**:
-   - Verify `sensor.date_time` exists
-   - Should update every minute
+4. **check time sensor**:
+   - verify `sensor.date_time` exists
+   - should update every minute
 
-### Dashboard Card Not Working
+### Dashboard Card not working
 
-**Problem**: Button card shows error or doesn't update
+**problem**: button card shows error or doesn't update
 
-**Solutions**:
-1. **Restart after installing button-card**:
+**solutions**:
+1. **restart after installing button-card**:
    - HACS installations require restart
    - Settings → System → Restart
 
-2. **Clear browser cache**:
-   - Hard refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
-   - Or try incognito mode
+2. **clear browser cache**:
+   - hard refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
+   - or try incognito mode
 
-3. **Verify entity IDs**:
-   - Check all entity IDs in the card YAML
-   - Must match your actual entities
+3. **verify entity IDs**:
+   - check all entity IDs in the card YAML
+   - must match your actual entities
 
-4. **Check for JavaScript errors**:
-   - Browser Console (F12)
-   - Look for ButtonCardJSTemplateError
+4. **check for JavaScript errors**:
+   - browser console (F12)
+   - look for ButtonCardJSTemplateError
 
-### Wrong Alarm Time
+### wrong Alarm Time
 
-**Problem**: Alarm time in HA is off by hours
+**problem**: Alarm time in HA is off by hours
 
-**Solutions**:
-1. **Time zone mismatch**:
+**solutions**:
+1. **time zone mismatch**:
    - Settings → System → General
-   - Set correct time zone
+   - set correct time zone
 
-2. **Use Google Clock**:
-   - Known bugs with Samsung and Xiaomi clocks
-   - Switch to Google Clock app
+2. **use Google Clock**:
+   - known bugs with Samsung and Xiaomi clocks
+   - switch to Google Clock app
 
 ---
 
-## 🎨 Customization Ideas
+## 🎨 customization Ideas
 
-### Change Flash Duration
+### change Flash duration
 
-Edit the `count` in `scripts.yaml`:
+edit the `count` in `scripts.yaml`:
 ```yaml
 count: 60  # 120 seconds (2 minutes)
 count: 15  # 30 seconds
 ```
 
-### Change Flash Speed
+### change Flash speed
 
-Edit the `delay` seconds:
+edit the `delay` seconds:
 ```yaml
 - delay:
     seconds: 0.5  # Faster flashing
 ```
 
-### Multiple Lights
+### multiple Lights
 
-Add multiple lights in the script:
+add multiple lights in the script:
 ```yaml
 - action: light.turn_on
   target:
@@ -438,12 +442,12 @@ Add multiple lights in the script:
       - light.hallway
 ```
 
-### Add Brightness Ramp
+### add Brightness ramp
 
-Instead of on/off, gradually increase brightness:
+Instead of OFF/ON, gradually increase brightness:
 ```yaml
 alarm_light_ramp:
-  alias: "Alarm Light Ramp"
+  alias: "Alarm light ramp"
   sequence:
     - repeat:
         count: 10
@@ -457,11 +461,11 @@ alarm_light_ramp:
               seconds: 6
 ```
 
-### Pre-Alarm Warning
+### pre-Alarm warning
 
-Trigger light 5 minutes before alarm:
+trigger light 5 minutes before alarm:
 ```yaml
-- alias: "Hassalarm Pre-Wake Light"
+- alias: "Hassalarm pre-wake light"
   trigger:
     - trigger: template
       value_template: "{{ ((as_timestamp(states('sensor.date_time').replace(',','')) | int) + 300) == (state_attr('input_datetime.next_alarm', 'timestamp') | int) }}"
@@ -469,9 +473,9 @@ Trigger light 5 minutes before alarm:
 
 ---
 
-## 📝 File Structure
+## 📝 file structure
 
-Your Home Assistant configuration should look like this:
+your Home Assistant configuration should look like this:
 
 ```
 homeassistant/
@@ -483,7 +487,7 @@ homeassistant/
 
 ---
 
-## 🙏 Credits
+## 🙏 credits
 
 - **[Hassalarm](https://github.com/Johboh/hassalarm)** by [@Johboh](https://github.com/Johboh) - The Android app that makes this all possible
 - **[button-card](https://github.com/custom-cards/button-card)** by [@RomRider](https://github.com/RomRider) - Beautiful custom dashboard cards
@@ -491,28 +495,28 @@ homeassistant/
 
 ---
 
-## 📄 License
+## 📄 license
 
-This project is provided as-is for personal use. Feel free to modify and adapt to your needs.
-
----
-
-## 🤝 Contributing
-
-Found a bug or have an improvement? Feel free to:
-1. Open an issue
-2. Submit a pull request
-3. Share your customizations!
+this project is provided as-is for personal use. Feel free to modify and adapt to your needs.
 
 ---
 
-## ⭐ Support
+## 🤝 contributing
+
+found a bug or have an improvement? feel free to:
+1. open an issue
+2. submit a pull request
+3. share your customizations!
+
+---
+
+## ⭐ support
 
 If you find this project useful, please:
-- ⭐ Star this repository
-- 📢 Share it with other Home Assistant users
-- 💬 Report issues or suggest improvements
+- ⭐ star this repository
+- 📢 share it with other Home Assistant users
+- 💬 report issues or suggest improvements
 
 ---
 
-**Happy waking up! 🌅**
+**happy waking up! 🌅**
