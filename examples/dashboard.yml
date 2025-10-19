@@ -1,13 +1,13 @@
-# Hassalarm Wake-Up Light Integration
-# Dashboard Card Examples
+# Hassalarm wake-up light integration
+# dashboard Card examples
 #
-# Add these to your Lovelace dashboard
-# Edit Dashboard → Add Card → Manual (YAML)
+# add these to your Lovelace dashboard
+# edit Dashboard → Add Card → Manual (YAML)
 
 # ========================================
 # MAIN CONTROL CARD
-# Toggle button with status indicators
-# Requires: button-card from HACS
+# toggle button with status indicators
+# requires: button-card from HACS
 # ========================================
 type: custom:button-card
 entity: input_boolean.alarm_light_enabled
@@ -48,18 +48,18 @@ styles:
 
 # ========================================
 # ALTERNATIVE: SIMPLE ENTITIES CARD
-# No custom components required
+# no custom components required
 # ========================================
 type: entities
-title: Wake-Up Alarm
+title: wake-up Alarm
 entities:
   - entity: input_datetime.next_alarm
-    name: Next Alarm
+    name: next Alarm
     icon: mdi:alarm
   - entity: input_boolean.alarm_light_enabled
-    name: Enable Light Flash
+    name: enable light flash
   - entity: device_tracker.your_phone  # CHANGE THIS
-    name: Phone Location
+    name: Phone location
   - type: button
     name: Test Light Flash
     icon: mdi:lightbulb-on
@@ -70,7 +70,7 @@ entities:
 
 # ========================================
 # ALTERNATIVE: COMPACT CARD
-# Minimal design with essential info
+# minimal design with essential info
 # ========================================
 type: custom:button-card
 entity: input_datetime.next_alarm
@@ -98,13 +98,13 @@ styles:
 
 # ========================================
 # FULL DASHBOARD VIEW
-# Complete view with all alarm controls
+# complete view with all alarm controls
 # ========================================
 views:
-  - title: Wake-Up Alarm
+  - title: wake-up Alarm
     icon: mdi:alarm
     cards:
-      # Status Card
+      # status Card
       - type: custom:button-card
         entity: input_boolean.alarm_light_enabled
         name: |
@@ -119,7 +119,7 @@ views:
             if (states['input_datetime.next_alarm']) {
               return 'Next: ' + states['input_datetime.next_alarm'].state;
             }
-            return 'No alarm set';
+            return 'no alarm set';
           ]]]
         tap_action:
           action: toggle
@@ -142,32 +142,32 @@ views:
           card:
             - padding: 12px
       
-      # Details Card
+      # details card
       - type: entities
-        title: Alarm Details
+        title: Alarm details
         entities:
           - entity: input_datetime.next_alarm
-            name: Scheduled Time
+            name: scheduled time
           - entity: sensor.time_until_alarm
-            name: Time Until Alarm
+            name: time until Alarm
           - entity: device_tracker.your_phone  # CHANGE THIS
-            name: Phone Status
+            name: Phone status
           - entity: input_boolean.alarm_light_enabled
-            name: Light Flash Enabled
+            name: Light flash enabled
       
-      # Test Controls
+      # test controls
       - type: entities
-        title: Test Controls
+        title: test controls
         entities:
           - type: button
-            name: Test Light Flash
+            name: test light flash
             icon: mdi:lightbulb-on
             action_name: TEST
             tap_action:
               action: call-service
               service: script.alarm_light_flash
           - type: button
-            name: Stop Light Flash
+            name: stop light flash
             icon: mdi:stop
             action_name: STOP
             tap_action:
@@ -176,9 +176,9 @@ views:
               service_data:
                 entity_id: script.alarm_light_flash
       
-      # Optional: History Graph
+      # optional: history graph
       - type: history-graph
-        title: Alarm History
+        title: Alarm history
         hours_to_show: 168  # 1 week
         entities:
           - entity: input_datetime.next_alarm
@@ -186,57 +186,57 @@ views:
 
 # ========================================
 # MARKDOWN INFO CARD
-# Display instructions and status
+# display instructions and status
 # ========================================
 type: markdown
 content: |
-  ## 🌅 Wake-Up Light Status
+  ## 🌅 wake-up light status
   
   {% set alarm = states('input_datetime.next_alarm') %}
   {% set enabled = is_state('input_boolean.alarm_light_enabled', 'on') %}
   {% set phone = is_state('device_tracker.your_phone', 'home') %}  {# CHANGE THIS #}
   
-  **Next Alarm:** {{ alarm if alarm not in ['unknown', 'unavailable'] else 'Not set' }}
+  **next Alarm:** {{ alarm if alarm not in ['unknown', 'unavailable'] else 'not set' }}
   
-  **Light Flash:** {{ '✅ Enabled' if enabled else '❌ Disabled' }}
+  **Light Flash:** {{ '✅ enabled' if enabled else '❌ disabled' }}
   
-  **Phone Status:** {{ '🏠 Home' if phone else '🚗 Away' }}
+  **Phone Status:** {{ '🏠 home' if phone else '🚗 away' }}
   
   ---
   
   {% if enabled and phone %}
-  ✅ **All systems ready!** Light will flash when alarm triggers.
+  ✅ **all systems ready!** light will flash when alarm triggers.
   {% elif enabled and not phone %}
-  ⚠️ **Warning:** You're away from home. Light won't trigger.
+  ⚠️ **warning:** you're away from home. light will not trigger.
   {% else %}
-  ℹ️ **Info:** Alarm light is currently disabled.
+  ℹ️ **info:** Alarm light is currently disabled.
   {% endif %}
   
-  💡 Tap the control button above to toggle on/off.
+  💡 tap the control button above to toggle on/off.
 
 # ========================================
 # GLANCE CARD
-# Quick overview of all entities
+# quick overview of all entities
 # ========================================
 type: glance
-title: Wake-Up Overview
+title: wake-up overview
 entities:
   - entity: input_datetime.next_alarm
-    name: Next Alarm
+    name: next Alarm
   - entity: input_boolean.alarm_light_enabled
-    name: Enabled
+    name: enabled
   - entity: device_tracker.your_phone  # CHANGE THIS
-    name: Phone
+    name: phone
   - entity: sensor.time_until_alarm
-    name: Time Left
+    name: time left
 
 # ========================================
 # PICTURE ELEMENTS CARD
-# Visual floorplan-style control
-# (Requires background image)
+# visual floorplan-style control
+# (requires background image)
 # ========================================
 type: picture-elements
-image: /local/bedroom_floorplan.png  # Add your own image
+image: /local/bedroom_floorplan.png  # add your own image
 elements:
   - type: state-icon
     entity: input_boolean.alarm_light_enabled

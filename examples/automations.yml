@@ -1,23 +1,23 @@
-# Hassalarm Wake-Up Light Integration
-# Automations configuration
+# Hassalarm wake-up light integration
+# automations configuration
 #
-# Add this to your automations.yaml file
+# add this to your automations.yaml file
 
 # ========================================
 # MAIN AUTOMATION
-# Triggers light flash when alarm goes off
-# Only if you're home and automation is enabled
+# triggers light flash when alarm goes off
+# only if you're home and automation is enabled
 # ========================================
-- alias: "Hassalarm Wake Up Light"
-  description: "Flash bedroom light when phone alarm goes off"
+- alias: "Hassalarm wake up light"
+  description: "flash bedroom light when phone alarm goes off"
   trigger:
     - trigger: template
       value_template: "{{ states('sensor.date_time') == (state_attr('input_datetime.next_alarm', 'timestamp') | int | timestamp_custom('%Y-%m-%d, %H:%M', True)) }}"
   condition:
-    # Condition 1: Phone must be at home
+    # Condition 1: phone must be at home
     - condition: state
       entity_id: device_tracker.your_phone  # CHANGE THIS to your device tracker
-      state: "home"  # Note: some device trackers use "Home" with capital H
+      state: "home"  # note: some device trackers use "Home" with capital H
     # Condition 2: Alarm light must be enabled via dashboard toggle
     - condition: state
       entity_id: input_boolean.alarm_light_enabled
@@ -27,11 +27,11 @@
 
 # ========================================
 # OPTIONAL: PRE-ALARM WARNING
-# Trigger light 5 minutes BEFORE alarm
-# Good for gradual wake-up
+# trigger light 5 minutes BEFORE alarm
+# good for gradual wake-up
 # ========================================
-- alias: "Hassalarm Pre-Wake Light"
-  description: "Gentle light 5 minutes before alarm"
+- alias: "Hassalarm pre-wake light"
+  description: "gentle light 5 minutes before alarm"
   trigger:
     - trigger: template
       value_template: "{{ ((as_timestamp(states('sensor.date_time').replace(',','')) | int) + 300) == (state_attr('input_datetime.next_alarm', 'timestamp') | int) }}"
@@ -47,10 +47,10 @@
 
 # ========================================
 # OPTIONAL: NOTIFICATION WHEN ALARM SET
-# Get notified on your phone when alarm is updated
+# get notified on your phone when alarm is updated
 # ========================================
-- alias: "Notify When Alarm Set"
-  description: "Send notification when Hassalarm updates next alarm"
+- alias: "notify when Alarm set"
+  description: "send notification when Hassalarm updates next alarm"
   trigger:
     - platform: state
       entity_id: input_datetime.next_alarm
@@ -60,7 +60,7 @@
   action:
     - action: notify.mobile_app_your_phone  # CHANGE THIS to your notification service
       data:
-        title: "⏰ Alarm Set"
+        title: "⏰ Alarm set"
         message: >
           Wake-up light scheduled for 
           {{ as_timestamp(states('input_datetime.next_alarm')) | timestamp_custom('%A, %B %d at %I:%M %p') }}
@@ -70,11 +70,11 @@
 
 # ========================================
 # OPTIONAL: AUTO-ENABLE ON WEEKDAYS
-# Automatically enable alarm light on work days
-# Disable on weekends
+# automatically enable alarm light on work days
+# disable on weekends
 # ========================================
-- alias: "Auto Enable Alarm Light - Weekdays"
-  description: "Enable alarm light automation on weekdays"
+- alias: "Auto rnable Alarm light - weekdays"
+  description: "enable alarm light automation on weekdays"
   trigger:
     - platform: time
       at: "22:00:00"  # 10 PM
@@ -91,8 +91,8 @@
       target:
         entity_id: input_boolean.alarm_light_enabled
 
-- alias: "Auto Disable Alarm Light - Weekends"
-  description: "Disable alarm light automation on weekends"
+- alias: "Auto disable Alarm aight - weekends"
+  description: "disable alarm light automation on weekends"
   trigger:
     - platform: time
       at: "22:00:00"  # 10 PM
@@ -108,13 +108,13 @@
 
 # ========================================
 # OPTIONAL: SNOOZE FUNCTIONALITY
-# Press a button to snooze for 10 minutes
+# press a button to snooze for 10 minutes
 # ========================================
-- alias: "Alarm Light Snooze"
-  description: "Snooze alarm light for 10 minutes when button pressed"
+- alias: "Alarm light snooze"
+  description: "snooze alarm light for 10 minutes when button pressed"
   trigger:
     - platform: state
-      entity_id: input_boolean.alarm_snooze  # Create this input_boolean
+      entity_id: input_boolean.alarm_snooze  # create this input_boolean
       to: "on"
   action:
     - action: script.turn_off
@@ -129,11 +129,11 @@
 
 # ========================================
 # OPTIONAL: TURN OFF OTHER AUTOMATIONS
-# Disable other bedroom automations during alarm
-# So motion sensors don't interfere
+# disable other bedroom automations during alarm
+# so motion sensors don't interfere
 # ========================================
-- alias: "Disable Bedroom Motion During Alarm"
-  description: "Pause bedroom motion lighting during wake-up sequence"
+- alias: "disable Bedroom Motion During Alarm"
+  description: "pause bedroom motion lighting during wake-up sequence"
   trigger:
     - platform: state
       entity_id: script.alarm_light_flash
@@ -154,11 +154,11 @@
 
 # ========================================
 # OPTIONAL: SAFETY TIMEOUT
-# Force stop light flashing after 2 minutes
-# In case something goes wrong
+# force stop light flashing after 2 minutes
+# in case something goes wrong
 # ========================================
-- alias: "Alarm Light Safety Timeout"
-  description: "Force stop alarm light after 2 minutes"
+- alias: "Alarm light safety timeout"
+  description: "force stop alarm light after 2 minutes"
   trigger:
     - platform: state
       entity_id: script.alarm_light_flash

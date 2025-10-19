@@ -1,12 +1,12 @@
-# Hassalarm Wake-Up Light Integration
-# Complete configuration.yaml example
+# Hassalarm wake-up light integration
+# complete configuration.yaml example
 # 
-# Copy the sections you need into your existing configuration.yaml
+# copy the sections you need into your existing configuration.yaml
 # DO NOT replace your entire file with this!
 
 # ========================================
 # INPUT DATETIME
-# Stores the next alarm time from Hassalarm app
+# stores the next alarm time from Hassalarm app
 # ========================================
 input_datetime:
   next_alarm:
@@ -16,17 +16,17 @@ input_datetime:
 
 # ========================================
 # INPUT BOOLEAN
-# Toggle to enable/disable the alarm light automation
+# toggle to enable/disable the alarm light automation
 # ========================================
 input_boolean:
   alarm_light_enabled:
     name: Alarm Light Enabled
-    initial: true  # Set to false if you want it disabled by default
+    initial: true  # set to false if you want it disabled by default
     icon: mdi:lightbulb-alert
 
 # ========================================
 # TIME SENSOR
-# Required for automation trigger
+# required for automation trigger
 # ========================================
 sensor:
   - platform: time_date
@@ -41,18 +41,18 @@ sensor:
 
 # ========================================
 # HISTORY & RECORDER (Optional but Recommended)
-# Preserves alarm time across Home Assistant restarts
+# preserves alarm time across Home Assistant restarts
 # ========================================
 history:
-  # Basic configuration - stores all entities
-  # You can customize to include/exclude specific entities
+  # basic configuration - stores all entities
+  # you can customize to include/exclude specific entities
 
 recorder:
-  # Basic configuration - default database settings
-  # Adjust purge_keep_days if you want to keep data longer/shorter
+  # basic configuration - default database settings
+  # adjust purge_keep_days if you want to keep data longer/shorter
   purge_keep_days: 7
   
-  # Optional: Only record specific entities to save space
+  # optional: only record specific entities to save space
   # include:
   #   entities:
   #     - input_datetime.next_alarm
@@ -61,11 +61,11 @@ recorder:
 
 # ========================================
 # OPTIONAL: TEMPLATE SENSOR
-# Shows time remaining until alarm
+# shows time remaining until alarm
 # ========================================
 template:
   - sensor:
-      - name: "Time Until Alarm"
+      - name: "time until alarm"
         unique_id: time_until_alarm
         state: >
           {% set alarm = states('input_datetime.next_alarm') %}
@@ -83,7 +83,7 @@ template:
           {% endif %}
         icon: mdi:timer
         
-      - name: "Next Alarm Friendly"
+      - name: "next Alarm friendly"
         unique_id: next_alarm_friendly
         state: >
           {% set alarm = states('input_datetime.next_alarm') %}
@@ -96,10 +96,10 @@ template:
 
 # ========================================
 # OPTIONAL: NOTIFICATIONS
-# Get notified when alarm is set
+# get notified when alarm is set
 # ========================================
 # automation:
-#   - alias: "Notify When Alarm Set"
+#   - alias: "notify when Alarm set"
 #     trigger:
 #       - platform: state
 #         entity_id: input_datetime.next_alarm
@@ -109,5 +109,5 @@ template:
 #     action:
 #       - service: notify.mobile_app_your_phone
 #         data:
-#           title: "Alarm Set"
-#           message: "Wake up light will trigger at {{ states('sensor.next_alarm_friendly') }}"
+#           title: "Alarm set"
+#           message: "wake up light will trigger at {{ states('sensor.next_alarm_friendly') }}"
